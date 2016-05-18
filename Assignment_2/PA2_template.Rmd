@@ -1,0 +1,82 @@
+---
+Assignment: Reproducible Research Project Assignment 2
+
+File name: "PA2_template.Rmd"
+Autor: Yoshiyasu Yamakawa
+Title: Types of storms and other severe weather events cause both public health and economic problems for communities/municipalities. The data is from NOAA storm database. 
+Synopsis: 
+Date: 5/11/2016
+output: html_document
+---
+
+## Question 1: Across the United States, which types of events (as indicated in the EVTYPE variable) are most harmful with respect to population health?
+
+# Step 1: Download a file and load the data into storm_data  
+
+```{r echo=TRUE, cache=TRUE}
+setwd("D:/_work/_Training/Data_Science/All_Course_Content/Lesson5 Reproducible Research/Projects/Assignment_2")
+download.file("https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2", "storm_data.csv.bz2")
+storm_data <- read.csv("./storm_data.csv.bz2", header = TRUE, sep = ",", quote = "\"")
+head(storm_data)
+dim(storm_data)
+```
+
+# Step 2: Data Processing - Aggregate sum of FATALITIES and INJURYtotal incidents by EVTYPE. Then take subset of Top20 of Fatality and Injury.  Then compare them with bar plot. 
+
+```{r echo=TRUE}
+# Calculate sum of fatalities by event type
+fatality <- aggregate(storm_data$FATALITIES, list(type = storm_data$EVTYPE), sum, na.rm=TRUE)
+names(fatality) <- c("type", "f_total")
+# Calculate sum of injuries by event type
+injury <- aggregate(storm_data$INJURIES, list(type = storm_data$EVTYPE), sum, na.r, = TRUE)
+names(injury) <- c("type", "i_total")
+# Merge Fatalities and Injuries by event type
+mrg_data <- merge(fatality, injury, by = "type")
+# Sort by fatality and injury
+mrg_data_sort <- mrg_data[order(-mrg_data$f_total, -mrg_data$i_total),]
+# Subset of top 20
+mrg_data_sort_20 <- mrg_data_sort[1:20,]
+mrg_data_sort_20$type <- factor(mrg_data_sort_20$type, levels = mrg_data_sort_20$type)
+#
+
+```
+
+# 3. Result: 
+
+```{r echo=TRUE}
+library(ggplot2)
+png(filename = "Fatality.png", width = 600, height = 480, units = "px")
+ggplot(mrg_data_sort_20, aes(x=mrg_data_sort_20$type, y=mrg_data_sort_20$f_total, fill=mrg_data_sort_20$type)) + 
+        geom_bar(stat = "identity") +
+        xlab("Weather Type") +
+        ylab("Number of Fatalities") +
+        ggtitle("Top 20 Type of weather causing fatality")
+dev.off()
+png(filename = "Injury.png", width = 600, height = 480, units = "px")
+ggplot(mrg_data_sort_20, aes(x=mrg_data_sort_20$type, y=mrg_data_sort_20$i_total, fill=mrg_data_sort_20$type)) + 
+        geom_bar(stat = "identity") +
+        xlab("Weather Type") +
+        ylab("Number of Injuries") +
+        ggtitle("Top 20 Type of weather causing injury")
+dev.off()
+```
+
+# 4.  Analysis:
+```
+
+```
+
+## Question 2: Across the United States, which types of events have the greatest economic consequences?
+
+# Step 1: Download a file and load the data into storm_data  
+```{r}
+I will be using the same data frame from Question #1
+```
+
+# Step 2: Data Processing: Aggregate sum of PROPDMG and CROPDMG by event type
+First
+CROPDMGEXP 
+
+```{r echo=TRUE}
+
+```
